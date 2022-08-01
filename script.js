@@ -3,6 +3,15 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 const API_URL = BASE_URL + '/discover/movie?sort_by=popularity.desc&'+API_KEY;
 
 const IMG_URL = 'https://image.tmdb.org/t/p/w500';
+
+const searchURL = BASE_URL + '/search/movie?'+API_KEY; 
+
+
+const main = document.getElementById('main');
+const form = document.getElementById('form');
+
+const search = document.getElementById('search');
+
 getMovies(API_URL);
 
 function getMovies(url) {
@@ -15,8 +24,10 @@ function getMovies(url) {
 
 
 function showMovies(data) {
+
+    main.innerHTML = '';
         
-    data.foreach(movie =>{
+    data.forEach(movie =>{
         const{title, poster_path, vote_average, overview} = movie;
         const movieEl = document.createElement('div');
         movieEl.classList.add('movie');
@@ -33,11 +44,29 @@ function showMovies(data) {
           ${overview}
         </div>
         `
+
+        main.appendChild(movieEl);
     })
 }
 
 function getcolor(vote) {
 
-    if(vote)
+    if(vote>= 8){
+        return 'green'
+    }else if(vote>= 5){
+        return 'red'
+    }
      
 }
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const searchterm = search.value;
+
+    if(searchterm) {
+        getMovies(searchURL+'&query='+searchterm)
+    }else{
+        getMovies(API_URL);
+    }
+})
